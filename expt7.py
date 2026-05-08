@@ -19,7 +19,7 @@ def FermatTest(p):
 def MillerRabinTest(p):
     a = 2
     if gcd(a, p) != 1:
-        print(f"{p} is composite")
+        print(f"gcd({a}, {p}) != 1, so {p} is composite")
         return
     k = 0
     p_minus_1 = p-1
