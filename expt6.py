@@ -9,12 +9,12 @@ def generator_LC():
     n = int(input("Enter the modulus (n): "))
     seed = int(input("Enter the seed value (X₀): "))
     random_numbers = []
-    for _ in range(b+1):
+    for _ in range(b):
         seed = (a * seed + b) % n
         random_numbers.append(seed)
     print("Generated random numbers using Linear Congruential Generator:")
     for i in range(b):
-        print(f"X{sub(i)}: {random_numbers[i]}")
+        print(f"X{sub(i+1)}: {random_numbers[i]}")
     print("-----------------------------------", end="\n\n")
 
 def generator_BBS():
