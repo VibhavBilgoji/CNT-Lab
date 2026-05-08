@@ -9,7 +9,7 @@ def generator_LC():
     n = int(input("Enter the modulus (n): "))
     seed = int(input("Enter the seed value (X₀): "))
     random_numbers = []
-    for _ in range(b):
+    for _ in range(b+1):
         seed = (a * seed + b) % n
         random_numbers.append(seed)
     print("Generated random numbers using Linear Congruential Generator:")
