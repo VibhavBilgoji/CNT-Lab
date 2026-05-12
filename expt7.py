@@ -54,6 +54,7 @@ def SolovayStrassenTest(p):
     print(f"Calculate Jacobi Symbol ({a}/{p}) = x")
     y = pow(a, (p-1) // 2, p)
     print(f"Compute a^((p-1)/2) mod p: {a}^{p-1} mod {p} = y")
+    print(f"y = {y}, x = {x}")
     if x == 0:
         print(f"Jacobi symbol ({a}/{p}) = 0, so {p} is composite")
         return
