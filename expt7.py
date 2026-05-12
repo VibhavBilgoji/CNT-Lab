@@ -16,7 +16,7 @@ def FermatTest(p):
         if y != 1:
             print(f"y != 1, therefore {p} is composite")
         else:
-            print(f"y = 1, {p} is probably a prime")
+            print(f"y == 1, {p} is probably a prime")
 
 def MillerRabinTest(p):
     a = 2
@@ -34,14 +34,14 @@ def MillerRabinTest(p):
     print(f"Compute initial witness: {a}^{m} mod {p} = b")
     if b == 1 or b == p-1:
         if(b == 1):
-            print(f"b = 1, therefore {p} is probably a prime")
+            print(f"b == 1, therefore {p} is probably a prime")
         else:
-            print(f"b = p-1, therefore {p} is probably a prime")
+            print(f"b == p-1, therefore {p} is probably a prime")
         return
     for i in range(k-1):
         b = pow(b, 2, p)
         if b == p-1:
-            print(f"b = p-1, therefore {p} is probably a prime")
+            print(f"b == p-1, therefore {p} is probably a prime")
             return
     print(f"Did not find 1 or n-1. therefore{p} is composite")
 
