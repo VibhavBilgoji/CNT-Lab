@@ -1,4 +1,5 @@
 import math
+from operator import indexOf
 
 def isPrime(n):
     if n <= 1:
@@ -7,6 +8,17 @@ def isPrime(n):
         if n % i == 0:
             return False
     return True
+
+def generate_prime_factors(p):
+    factors = {}
+    for i in range(2, p + 1):
+        if isPrime(i) and p % i == 0:
+            try:
+                factors[i] += 1
+            except KeyError:
+                factors[i] = 1
+    print(f"Prime factors of {p} are: {factors}")
+    return factors
 
 def fermatFact(n):
     i = 1
@@ -43,7 +55,42 @@ def pollardFact(n):
     print("No factors found using Pollard's p-1 method with the given bound.")
 
 def quadraticSieveFact(n):
-    pass
+    b = math.sqrt(n);
+    print(f"√n = {b:.2f}", end = " ")
+    b = math.ceil(b)
+    print(f"Calculating squares from {b}²...")
+    #numbers starting from b
+    prime_factors_set = []
+    found = False
+    ogB = b
+    x = 0
+    y = 0
+    while not found:
+        p = b ** b
+        current_factors = generate_prime_factors(p)
+        for f in prime_factors_set:
+            all_even = True
+            for i in current_factors.keys():
+                try:
+                    t = f[i]
+                except KeyError:
+                    t = 0
+                if((t + current_factors[i]) % 2 != 0):
+                    all_even = False
+                    break
+            if all_even:
+                idx = indexOf(prime_factors_set, f)
+                x = b
+                y = ogB+idx
+                found = True
+                break
+        if found:
+            break
+        prime_factors_set += [current_factors]
+        b += 1
+
+    print(f"Found a pair of squares: {x}² and {y}²")
+    #TODO: find the factors using x and y
 
 def main():
     n = int(input("Enter the integer to be factored (n): "))
