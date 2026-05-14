@@ -9,7 +9,7 @@ def isPrime(n):
             return False
     return True
 
-def generate_prime_factors(p):
+def generate_prime_factors(b, p):
     factors = {}
     for i in range(2, p + 1):
         if isPrime(i) and p % i == 0:
@@ -17,7 +17,14 @@ def generate_prime_factors(p):
                 factors[i] += 1
             except KeyError:
                 factors[i] = 1
-    print(f"Prime factors of {p} are: {factors}")
+            p //= i
+            while p % i == 0:
+                factors[i] += 1
+                p //= i
+    print(f"Prime factors of {b}² are: ", end = "")
+    for k, v in factors.items():
+        print(f"({k} ^ {v}) * ", end = "")
+    print("\b\b ")
     return factors
 
 def fermatFact(n):
@@ -40,34 +47,27 @@ def pollardFact(n):
     if(g > 1 and g < n):
         print(f"gcd(a, n) > 1, ∴ Factors of {n} are: {g} and {n//g}")
         return
-    print("Calculating a^j mod n, for all primes j = 2 to b...")
+    print("gcd(a, n) == 1, continuing...\n")
+    print("Calculating aʲ mod n, for all primes j = 2 to b...")
     for j in range(2, b+1):
         if not isPrime(j):
             continue
-        print(f"j = {j}\ta = {a}")
+        print(f"j = {j}    a = {a}", end = "    ")
         a = (a ** j) % n
         d = math.gcd(a-1, n)
-        print(f"a =  aʲ mod n = {a}\td = gcd(a-1, n) = {d}")
+        print(f"a = aʲ mod n = {a}    d = gcd(a-1, n) = {d}")
         if d > 1:
             print(f"gcd(a-1, n) > 1, ∴ Factors of {n} are: {d} and {n//d}")
             return
-        print(f"No factors found for j = {j}, moving to the next prime...")
+        print(f"No factors found for j = {j}, moving to the next prime...\n")
     print("No factors found using Pollard's p-1 method with the given bound.")
 
-def quadraticSieveFact(n):
-    b = math.sqrt(n);
-    print(f"√n = {b:.2f}", end = " ")
-    b = math.ceil(b)
-    print(f"Calculating squares from {b}²...")
-    #numbers starting from b
+def findPairOfSquares(n):
+    b = n
     prime_factors_set = []
-    found = False
-    ogB = b
-    x = 0
-    y = 0
-    while not found:
-        p = b ** b
-        current_factors = generate_prime_factors(p)
+    while True:
+        p = b ** 2
+        current_factors = generate_prime_factors(b, p)
         for f in prime_factors_set:
             all_even = True
             for i in current_factors.keys():
@@ -80,17 +80,32 @@ def quadraticSieveFact(n):
                     break
             if all_even:
                 idx = indexOf(prime_factors_set, f)
-                x = b
-                y = ogB+idx
-                found = True
-                break
-        if found:
-            break
+                return [b, n+idx]
         prime_factors_set += [current_factors]
         b += 1
 
-    print(f"Found a pair of squares: {x}² and {y}²")
-    #TODO: find the factors using x and y
+def quadraticSieveFact(n):
+    r = math.sqrt(n)
+    print(f"√n = {r:.2f}", end = " ")
+    r = math.ceil(r)
+    print(f"Calculating squares from {r}²...\n")
+    #numbers starting from b
+    [p, q] = findPairOfSquares(r)
+    print(f"\nFound a pair of squares: {p}² and {q}²")
+    a = int(math.sqrt((p**2) * (q**2)))
+    print(f"Calculating a = √({p}² * {q}²) = {a}")
+    b = p * q % n
+    print(f"Calculating b = ({p} * {q}) mod n = {b}")
+    x = math.gcd(a-b, n)
+    y = math.gcd(a+b, n)
+    print("\nCalculating factors using the pair of squares...")
+    print(f"gcd(a-b, n) = {x}\ngcd(a+b, n) = {y}")
+    if x > 1 and x < n:
+        print(f"Factors of {n} are: {x} and {n//x}")
+    elif y > 1 and y < n:
+        print(f"Factors of {n} are: {y} and {n//y}")
+    else:
+        print("No factors found using the pair of squares.")
 
 def main():
     n = int(input("Enter the integer to be factored (n): "))
