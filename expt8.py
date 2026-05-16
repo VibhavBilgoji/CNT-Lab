@@ -1,5 +1,4 @@
 import math
-from operator import indexOf
 
 def isPrime(n):
     if n <= 1:
@@ -9,7 +8,7 @@ def isPrime(n):
             return False
     return True
 
-def generate_prime_factors(b, p):
+def generate_prime_factors(p):
     factors = {}
     for i in range(2, p + 1):
         if isPrime(i) and p % i == 0:
@@ -21,10 +20,6 @@ def generate_prime_factors(b, p):
             while p % i == 0:
                 factors[i] += 1
                 p //= i
-    print(f"Prime factors of {b}² are: ", end = "")
-    for k, v in factors.items():
-        print(f"({k} ^ {v}) * ", end = "")
-    print("\b\b ")
     return factors
 
 def fermatFact(n):
@@ -62,12 +57,17 @@ def pollardFact(n):
         print(f"No factors found for j = {j}, moving to the next prime...\n")
     print("No factors found using Pollard's p-1 method with the given bound.")
 
-def findPairOfSquares(n):
-    b = n
-    prime_factors_set = []
+def findPairOfSquares(og, ini):
+    b = ini
+    prime_factors_set: list[dict[int, int]] = []
     while True:
-        p = b ** 2
-        current_factors = generate_prime_factors(b, p)
+        p = b ** 2 % og
+        current_factors: dict[int, int] = generate_prime_factors(p)
+        print(f"Prime factors of {b}² mod {og} are: ", end = "")
+        for k, v in current_factors.items():
+            print(f"({k} ^ {v}) * ", end = "")
+        print("\b\b ")
+        ptr = 0
         for f in prime_factors_set:
             all_even = True
             for i in current_factors.keys():
@@ -78,22 +78,32 @@ def findPairOfSquares(n):
                 if((t + current_factors[i]) % 2 != 0):
                     all_even = False
                     break
+            for i in f.keys():
+                try:
+                    t = current_factors[i]
+                except KeyError:
+                    t = 0
+                if((t + f[i]) % 2 != 0):
+                    all_even = False
+                    break
             if all_even:
-                idx = indexOf(prime_factors_set, f)
-                return [b, n+idx]
-        prime_factors_set += [current_factors]
+                q = ini + ptr
+                a = int(math.sqrt((q ** 2 % og) * p))
+                return [b, q, a]
+            ptr += 1
+        prime_factors_set.append(current_factors)
         b += 1
 
 def quadraticSieveFact(n):
-    r = math.sqrt(n)
-    print(f"√n = {r:.2f}", end = " ")
-    r = math.ceil(r)
-    print(f"Calculating squares from {r}²...\n")
+    sqrt = math.sqrt(n)
+    print(f"√n = {sqrt:.2f}", end = " ")
+    sqrt = math.ceil(sqrt)
+    print(f"Calculating squares from {sqrt}²...\n")
     #numbers starting from b
-    [p, q] = findPairOfSquares(r)
+    [p, q, a] = findPairOfSquares(n, sqrt)
     print(f"\nFound a pair of squares: {p}² and {q}²")
-    a = int(math.sqrt((p**2) * (q**2)))
-    print(f"Calculating a = √({p}² * {q}²) = {a}")
+    # a = int(math.sqrt((p**2) * (q**2)))
+    print(f"Calculating a = √({p}² mod {n} * {q}² mod {n}) = {a}")
     b = p * q % n
     print(f"Calculating b = ({p} * {q}) mod n = {b}")
     x = math.gcd(a-b, n)
