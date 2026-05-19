@@ -117,6 +117,21 @@ def quadraticSieveFact(n):
     else:
         print("No factors found using the pair of squares.")
 
+def g(x, n):
+    return (n*n + 1) % n
+
+def pollardRho(n):
+    x = y = 2
+    d = 1
+    while d == 1:
+        x = g(x, n)
+        y = g(g(y, n), n)
+        d = math.gcd(abs(x - y), n)
+    if d == n:
+        print("Failure: No factors found.")
+    else:
+        print(f"Factors of {n} are: {d} and {n//d}")
+
 def main():
     n = int(input("Enter the integer to be factored (n): "))
     if(n <= 1):
@@ -127,7 +142,8 @@ def main():
         print("1. Fermat's Factorization")
         print("2. Pollard's p-1 Algorithm")
         print("3. Quadratic Sieve Method")
-        print("4. Enter another integer")
+        print("4. Pollard Rho Algorithm")
+        print("5. Enter another integer")
         print("0. Exit")
         try:
             choice = int(input("\nEnter your choice: "))
@@ -142,6 +158,8 @@ def main():
             elif choice == 3:
                 quadraticSieveFact(n)
             elif choice == 4:
+                pollardRho(n)
+            elif choice == 5:
                 return main()
             elif choice == 0:
                 print("Exiting the program...")
