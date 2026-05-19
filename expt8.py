@@ -118,15 +118,17 @@ def quadraticSieveFact(n):
         print("No factors found using the pair of squares.")
 
 def g(x, n):
-    return (n*n + 1) % n
+    return (x*x + 1) % n
 
 def pollardRho(n):
     x = y = 2
     d = 1
+    print(f"Starting Pollard's Rho with x = {x}, y = {y}, d = {d}")
     while d == 1:
         x = g(x, n)
         y = g(g(y, n), n)
         d = math.gcd(abs(x - y), n)
+        print(f"x = {x}, y = {y}, gcd(|x-y|, n) = {d}")
     if d == n:
         print("Failure: No factors found.")
     else:
