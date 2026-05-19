@@ -38,9 +38,8 @@ def pollardFact(n):
     b = int(input("Enter the bound (b): "))
     print(f"a = 2, b = {b}")
     g = math.gcd(a,n)
-    print(f"gcd(a, n) is {g}")
     if(g > 1 and g < n):
-        print(f"gcd(a, n) > 1, ∴ Factors of {n} are: {g} and {n//g}")
+        print(f"gcd(a, n) = {g}, ∴ Factors of {n} are: {g} and {n//g}")
         return
     print("gcd(a, n) == 1, continuing...\n")
     print("Calculating aʲ mod n, for all primes j = 2 to b...")
@@ -54,7 +53,7 @@ def pollardFact(n):
         if d > 1:
             print(f"gcd(a-1, n) > 1, ∴ Factors of {n} are: {d} and {n//d}")
             return
-        print(f"No factors found for j = {j}, moving to the next prime...\n")
+        print(f"No factors found for j = {j}\n")
     print("No factors found using Pollard's p-1 method with the given bound.")
 
 def findPairOfSquares(og, ini):
@@ -124,11 +123,14 @@ def pollardRho(n):
     x = y = 2
     d = 1
     print(f"Starting Pollard's Rho with x = {x}, y = {y}, d = {d}")
+    itr = 1
     while d == 1:
+        print(f"Iteration {itr}:")
         x = g(x, n)
         y = g(g(y, n), n)
         d = math.gcd(abs(x - y), n)
-        print(f"x = {x}, y = {y}, gcd(|x-y|, n) = {d}")
+        print(f"x = {x}, y = {y}, gcd(|{x}-{y}|, {n}) = {d}\n")
+        itr += 1
     if d == n:
         print("Failure: No factors found.")
     else:
@@ -140,7 +142,7 @@ def main():
         print("Please enter an integer greater than 1.")
         return main()
     while True:
-        print("\nChoose the method to factor n:")
+        print(f"\nChoose the method to factor {n}:")
         print("1. Fermat's Factorization")
         print("2. Pollard's p-1 Algorithm")
         print("3. Quadratic Sieve Method")
