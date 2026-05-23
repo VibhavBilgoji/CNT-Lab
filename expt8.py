@@ -23,6 +23,9 @@ def generate_prime_factors(p):
     return factors
 
 def fermatFact(n):
+    if isPrime(n):
+        print(f"{n} is a prime number, so it cannot be factored further.")
+        return
     i = 1
     while True:
         x = math.sqrt(n + i ** 2)
