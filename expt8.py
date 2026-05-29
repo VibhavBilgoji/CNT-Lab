@@ -98,7 +98,7 @@ def findPairOfSquares(og, ini):
 
 def quadraticSieveFact(n):
     sqrt = math.sqrt(n)
-    print(f"√n = {sqrt:.2f}", end = " ")
+    print(f"√n = {sqrt:.2f}", end = ", ")
     sqrt = math.ceil(sqrt)
     print(f"Calculating squares from {sqrt}²...\n")
     #numbers starting from b
