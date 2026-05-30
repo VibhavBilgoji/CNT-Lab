@@ -52,8 +52,29 @@ def affine_cipher():
         print("Plaintext:", processed_text)
 
 def vigenere_cipher():
-    # mode = encrypt_or_decrypt()
-    pass
+    mode = encrypt_or_decrypt()
+    vector = input("Enter the vector: ").strip().upper()
+    n = len(vector)
+    i = 0
+    processed_arr = []
+    if mode == 'E':
+        for c in input_text:
+            if c == ' ':
+                continue
+            offset = alpha.index(vector[i % n])
+            processed_arr += alpha[(alpha.index(c) + offset) % 26]
+            i += 1
+        processed_text = ''.join(processed_arr)
+        print("Ciphertext: " + processed_text)
+    else:
+        for c in input_text:
+            if c == ' ':
+                continue
+            offset = alpha.index(vector[i % n])
+            processed_arr += alpha[(alpha.index(c) - offset) % 26]
+            i += 1
+        processed_text = ''.join(processed_arr)
+        print("Ciphertext: " + processed_text)
 
 def playfair_cipher():
     # mode = encrypt_or_decrypt()
