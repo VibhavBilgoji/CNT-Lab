@@ -1,16 +1,45 @@
+alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+def encrypt_or_decrypt():
+    while True:
+        choice = input("Do you want to encrypt or decrypt? (E/D): ").strip().upper()
+        if choice in ('E', 'D'):
+            return choice
+        print("Please enter 'E' for encrypt or 'D' for decrypt.")
+
 def caesar_cipher():
-    pass
+    mode = encrypt_or_decrypt()
+    k = int(input("Enter the shift value (k): "))
+    processed_arr = []
+    if mode == 'E':
+        for c in input_text:
+            if(c == ' '):
+                continue
+            processed_arr += alpha[(alpha.index(c.upper()) + k) % 26]
+        processed_text = ''.join(processed_arr)
+        print("Encrypted text:", processed_text)
+    else:
+        for c in input_text:
+            if(c == ' '):
+                continue
+            processed_arr += alpha[(alpha.index(c.upper()) - k) % 26]
+        processed_text = ''.join(processed_arr)
+        print("Decrypted text:", processed_text)
 
 def affine_cipher():
+    # mode = encrypt_or_decrypt()
     pass
 
 def vigenere_cipher():
+    # mode = encrypt_or_decrypt()
     pass
 
 def playfair_cipher():
+    # mode = encrypt_or_decrypt()
     pass
 
 def adfgx_cipher():
+    # mode = encrypt_or_decrypt()
     pass
 
 def choose():
@@ -37,7 +66,7 @@ def call_cipher(choice):
         adfgx_cipher()
 
 def choose_at_end():
-    print("\nChoose option:\n1. Enter another ciphertext\n2. Choose another cipher")
+    print("\nChoose option:\n1. Enter another text\n2. Choose another cipher")
     while True:
         try:
             option = int(input("Enter your choice: "))
@@ -49,8 +78,8 @@ def choose_at_end():
 
 def run_program():
     while True:
-        global ct
-        ct = input("\nEnter ciphertext: ")
+        global input_text
+        input_text = input("\nEnter text: ")
         while True:
             choice = choose()
             call_cipher(choice)
