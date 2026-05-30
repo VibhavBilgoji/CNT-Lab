@@ -13,22 +13,43 @@ def caesar_cipher():
     processed_arr = []
     if mode == 'E':
         for c in input_text:
-            if(c == ' '):
+            if c == ' ':
                 continue
-            processed_arr += alpha[(alpha.index(c.upper()) + k) % 26]
+            processed_arr += alpha[(alpha.index(c) + k) % 26]
         processed_text = ''.join(processed_arr)
-        print("Encrypted text:", processed_text)
+        print("Ciphertext:", processed_text)
     else:
         for c in input_text:
-            if(c == ' '):
+            if c == ' ':
                 continue
-            processed_arr += alpha[(alpha.index(c.upper()) - k) % 26]
+            processed_arr += alpha[(alpha.index(c) - k) % 26]
         processed_text = ''.join(processed_arr)
-        print("Decrypted text:", processed_text)
+        print("Plaintext:", processed_text)
 
 def affine_cipher():
-    # mode = encrypt_or_decrypt()
-    pass
+    mode = encrypt_or_decrypt()
+    a = int(input("Enter value of α: "))
+    b = int(input("Enter value of β: "))
+    processed_arr = []
+    if mode == 'E':
+        for c in input_text:
+            if c == ' ':
+                continue
+            processed_arr += alpha[(a * alpha.index(c) + b) % 26]
+        processed_text = ''.join(processed_arr)
+        print("Ciphertext:", processed_text)
+    else:
+        inv = 1
+        while a * inv % 26 != 1:
+            inv += 1
+        a = inv
+        b = (-b) * inv % 26
+        for c in input_text:
+            if c == ' ':
+                continue
+            processed_arr += alpha[(a * alpha.index(c) + b) % 26]
+        processed_text = ''.join(processed_arr)
+        print("Plaintext:", processed_text)
 
 def vigenere_cipher():
     # mode = encrypt_or_decrypt()
@@ -79,7 +100,7 @@ def choose_at_end():
 def run_program():
     while True:
         global input_text
-        input_text = input("\nEnter text: ")
+        input_text = input("\nEnter text: ").upper()
         while True:
             choice = choose()
             call_cipher(choice)
