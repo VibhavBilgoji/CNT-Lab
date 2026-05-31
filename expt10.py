@@ -126,6 +126,7 @@ def playfair_cipher(input_text):
         while i < n:
             a = input_text[i]
             b = input_text[i+1]
+            i += 2
             xj = xk = yj = yk = 0
             for j in range(5):
                 for k in range(5):
@@ -138,7 +139,7 @@ def playfair_cipher(input_text):
             if xj == yj: #same row
                 ao = matrix[xj*5 + ((xk-1) % 5)]
                 bo = matrix[yj*5 + ((yk-1) % 5)]
-            elif xk == xk: #same column
+            elif xk == yk: #same column
                 ao = matrix[((xj-1) % 5)*5 + xk]
                 bo = matrix[((yj-1) % 5)*5 + yk]
             else:
