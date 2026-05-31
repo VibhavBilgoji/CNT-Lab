@@ -18,12 +18,12 @@ def caesar_cipher(input_text):
         for c in input_text:
             processed_arr += alpha[(alpha.index(c) + k) % 26]
         processed_text = ''.join(processed_arr)
-        print("Ciphertext:", processed_text)
+        print("\nCiphertext:", processed_text)
     else:
         for c in input_text:
             processed_arr += alpha[(alpha.index(c) - k) % 26]
         processed_text = ''.join(processed_arr)
-        print("Plaintext:", processed_text)
+        print("\nPlaintext:", processed_text)
 
 def affine_cipher(input_text):
     mode = toEncrypt()
@@ -34,7 +34,7 @@ def affine_cipher(input_text):
         for c in input_text:
             processed_arr += alpha[(a * alpha.index(c) + b) % 26]
         processed_text = ''.join(processed_arr)
-        print("Ciphertext:", processed_text)
+        print("\nCiphertext:", processed_text)
     else:
         inv = 1
         while a * inv % 26 != 1:
@@ -44,7 +44,7 @@ def affine_cipher(input_text):
         for c in input_text:
             processed_arr += alpha[(a * alpha.index(c) + b) % 26]
         processed_text = ''.join(processed_arr)
-        print("Plaintext:", processed_text)
+        print("\nPlaintext:", processed_text)
 
 def vigenere_cipher(input_text):
     mode = toEncrypt()
@@ -58,14 +58,14 @@ def vigenere_cipher(input_text):
             processed_arr += alpha[(alpha.index(c) + offset) % 26]
             i += 1
         processed_text = ''.join(processed_arr)
-        print("Ciphertext: " + processed_text)
+        print("\nCiphertext: " + processed_text)
     else:
         for c in input_text:
             offset = alpha.index(key[i % n])
             processed_arr += alpha[(alpha.index(c) - offset) % 26]
             i += 1
         processed_text = ''.join(processed_arr)
-        print("Ciphertext: " + processed_text)
+        print("\nCiphertext: " + processed_text)
 
 def playfair_cipher(input_text):
     mode = toEncrypt()
@@ -150,8 +150,68 @@ def playfair_cipher(input_text):
         print("\nPlaintext: " + processed_text)
 
 def adfgx_cipher(input_text):
-    # mode = toEncrypt()
-    pass
+    mode = toEncrypt()
+    matrix = []
+    print("Enter the matrix (seperate characters by space, don't put J): ")
+    for i in range(5):
+        row = input(f"Enter Row {i+1}: ").replace(" ", "").upper()
+        matrix.extend(c for c in row)
+    key = input("Enter the key: ").replace(" ", "").upper()
+    key_len = len(key)
+    sorted_key_arr = list(key)
+    sorted_key_arr.sort()
+    adfgx = "ADFGX"
+    step3_arr = []
+    processed_arr = []
+    if mode:
+        for c in input_text:
+            i = matrix.index(c)
+            j, k = i // 5, i % 5
+            step3_arr += adfgx[j]
+            step3_arr += adfgx[k]
+        columns = {}
+        step1_arr_len = len(step3_arr)
+        for i in range(key_len):
+            str = []
+            while i < step1_arr_len:
+                str += step3_arr[i]
+                i += key_len
+            i %= key_len
+            columns[key[i]] = ''.join(str)
+        processed_arr = [columns[c] for c in sorted_key_arr]
+        processed_text = ''.join(processed_arr)
+        print("\nCiphertext: " + processed_text)
+    else:
+        input_len = len(input_text)
+        key_len = len(key)
+        extras = input_len % key_len
+        min_size = input_len // key_len
+        col_sizes = {}
+        for c in key:
+            if extras > 0:
+                col_sizes[c] = min_size + 1
+                extras -= 1
+            else:
+                col_sizes[c] = min_size
+        columns = {}
+        i = 0
+        for c in sorted_key_arr:
+            columns[c] = input_text[i : i + col_sizes[c]]
+            i += col_sizes[c]
+        step3_arr = [columns[c] for c in key]
+        before_step3 = []
+        for i in range(min_size):
+            for c in key:
+                before_step3.append(columns[c][i])
+        extras = input_len % key_len
+        for i in range(extras):
+            before_step3.append(columns[key[i]][min_size])
+        for i in range(0, input_len, 2):
+            j = adfgx.index(before_step3[i])
+            k = adfgx.index(before_step3[i+1])
+            processed_arr += matrix[j*5 + k]
+        processed_text = ''.join(processed_arr)
+        print("\nPlaintext: " + processed_text)
 
 def choose():
     print("\nChoose Cipher:\n1. Caesar\n2. Affine\n3. Vigenère\n4. Playfair\n5. ADFGX")
