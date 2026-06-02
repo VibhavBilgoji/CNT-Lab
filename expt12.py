@@ -1,22 +1,33 @@
-q = int(input("Enter a prime number (q): "))
-g = int(input("Enter a alpha (α): "))
+def key_exchange():
+    q = int(input("Enter a prime number (q): "))
+    g = int(input("Enter a alpha (α): "))
 
-a = int(input("Enter Alice's private key: "))
-b = int(input("Enter Bob's private key: "))
+    a = int(input("Enter Alice's private key: "))
+    b = int(input("Enter Bob's private key: "))
 
-A = pow(g, a, q)
-B = pow(g, b, q)
+    A = pow(g, a, q)
+    B = pow(g, b, q)
 
-print("\nAlice's public key:", A)
-print("Bob's public key:", B)
+    print("\nAlice's public key:", A)
+    print("Bob's public key:", B)
 
-alice_secret = pow(B, a, q)
-bob_secret = pow(A, b, q)
+    alice_secret = pow(B, a, q)
+    bob_secret = pow(A, b, q)
 
-print("\nAlice's shared secret:", alice_secret)
-print("Bob's shared secret:", bob_secret)
+    print("\nAlice's shared secret:", alice_secret)
+    print("Bob's shared secret:", bob_secret)
 
-if alice_secret == bob_secret:
-    print("Key exchange successful!")
-else:
-    print("Key exchange failed!")
+    if alice_secret == bob_secret:
+        print("Key exchange successful!")
+    else:
+        print("Key exchange failed!")
+
+if __name__ == "__main__":
+    try:
+        while True:
+            key_exchange()
+            choice = input("\nDo you want to perform another key exchange? (y/n): ")
+            if choice.lower() != 'y':
+                break
+    except KeyboardInterrupt:
+        print("\nExiting...")
