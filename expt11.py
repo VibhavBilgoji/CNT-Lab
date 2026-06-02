@@ -34,30 +34,62 @@ def generate_key(n):
         d += 1
     return e, d
 
-def process(text, key):
+def is_numeric_input(text):
+    return text.isdigit()
+
+def convert_text_to_integer(text):
+    msg = 0
+    has_leading_a = text[0] == 'A'
+    for c in text:
+        i = alpha.index(c)
+        msg = msg * 100 + i
+    print("Plaintext in integer:", msg)
+    return msg, has_leading_a
+
+def pad_integer_input(numeric_str):
+    if len(numeric_str) % 2 == 0:
+        return numeric_str, False
+
+    if int(numeric_str[0]) < 10:
+        return numeric_str, True
+    else:
+        print("Error: Odd-length numeric input with first digit >= 10 is ambiguous.")
+        print("Please enter even-length numeric input or text input.")
+        return None, None
+
+def process(text, key, mode):
     firstA = False
-    try:
-        msg = int(text)
-        if text[0] == '0' and text[1] == '0':
-            firstA = True
-    except ValueError:
-        msg = 0
-        if text[0] == 'A':
-            firstA = True
-        for c in text.replace(" ", "").upper():
-            i = alpha.index(c)
-            msg = msg * 100 + i
-        print("Plaintext in integer:", msg)
+    first_digit_single = False
+    if is_numeric_input(text):
+        msg = text
+        padded, first_digit_single = pad_integer_input(msg)
+        if padded is None:
+            return None
+        msg = padded
+    else:
+        text = text.upper()
+        msg_int, firstA = convert_text_to_integer(text)
+        msg = str(msg_int)
     c = ""
-    msg = str(msg)
     if firstA:
         c += "00"
-    for i in range(0, len(msg), 2):
-        bits = int(msg[i:i+2])
-        cBits = pow(bits, key[0], key[1]) % 26
+    if first_digit_single:
+        c += "0" + str(text[0])
+        start_idx = 1
+    else:
+        start_idx = 0
+
+    for i in range(start_idx, len(msg), 2):
+        if i + 1 < len(msg):
+            bits = int(msg[i:i+2])
+        else:
+            bits = int(msg[i])
+
+        cBits = pow(bits, key[0], key[1])
         if cBits < 10:
             c += "0"
         c += str(cBits)
+
     return c
 
 def getN():
@@ -73,13 +105,19 @@ def main(n, keys):
     print("2. Decrypt a message")
     choice = int(input("Enter your choice: "))
     if choice == 1:
-        m = input("\nEnter the plaintext: ")
-        c = process(m.upper(), (keys[0], n))
-        print(f"Ciphertext: {c}\n")
+        m = input("\nEnter the plaintext (letters or integers): ")
+        c = process(m, (keys[0], n), 'encrypt')
+        if c is not None:
+            print(f"Ciphertext: {c}\n")
+        else:
+            print("Encryption failed. Please try again.\n")
     elif choice == 2:
-        c = input("\nEnter the ciphertext: ")
-        m = process(c.upper(), (keys[1], n))
-        print(f"Plaintext: {m}\n")
+        c = input("\nEnter the ciphertext (letters or integers): ")
+        m = process(c, (keys[1], n), 'decrypt')
+        if m is not None:
+            print(f"Plaintext: {m}\n")
+        else:
+            print("Decryption failed. Please try again.\n")
     else:
         print("\nInvalid choice. Exiting.")
         raise KeyboardInterrupt
@@ -99,12 +137,10 @@ if __name__ == "__main__":
             p = int(input("Enter p: "))
             q = int(input("Enter q: "))
             n = p * q
-            keys = generate_key(n)
-            d = 0
-            if keys[0] == e:
-                d = keys[1]
-            else:
-                d = keys[0]
+            phi = (p - 1) * (q - 1)
+            d = 1
+            while (d * e) % phi != 1:
+                d += 1
             print(f"Calculated private key d: {d}")
             main(n, (e, d))
     except KeyboardInterrupt:
