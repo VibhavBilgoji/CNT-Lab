@@ -58,7 +58,7 @@ def pohligHellman(a, b, n):
         return
     print(f"x ≡ {a0} (mod {p})\n")
 
-    print("let x = b₀ + {q}b₁")
+    print(f"let x = b₀ + {q}b₁")
     print("Calculating b₀...")
     b0 = calcPower(a, b, n, q, p, "b₀")
     if b0 is None:
